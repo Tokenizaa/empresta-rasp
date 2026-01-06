@@ -26,14 +26,13 @@ if (!loadEnv(__DIR__ . '/.env')) {
     loadEnv(__DIR__ . '/../.env');
 }
 
-$host = getenv('DB_HOST') ?: 'localhost';
-$db   = getenv('DB_NAME') ?: 'u700037883_x';
-$user = getenv('DB_USER') ?: 'u700037883_x';
-$pass = getenv('DB_PASS') ?: 'Resident4567'; // Fallback apenas para garantir, mas o ideal é remover
+$host = getenv('DB_HOST') ?: 'db.kfvadrowjzgcandefodu.supabase.co';
+$port = getenv('DB_PORT') ?: '5432';
+$db   = getenv('DB_NAME') ?: 'postgres';
+$user = getenv('DB_USER') ?: 'postgres';
+$pass = getenv('DB_PASS') ?: 'Resident4567'; // O ideal é que esta senha esteja no .env no servidor
 
-$charset = 'utf8mb4';
-
-$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+$dsn = "pgsql:host=$host;port=$port;dbname=$db";
 $options = [
     PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -42,7 +41,7 @@ $options = [
 try {
      $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
-     throw new \PDOException("Erro de conexão com o banco de dados. Verifique o arquivo .env", (int)$e->getCode());
+     throw new \PDOException("Erro de conexão com o banco de dados Supabase. Verifique o arquivo .env ou as configurações de rede. " . $e->getMessage(), (int)$e->getCode());
 }
 
 $site = $pdo->query("SELECT nome_site, logo, deposito_min, saque_min, cpa_padrao, revshare_padrao FROM config LIMIT 1")->fetch(PDO::FETCH_ASSOC);
