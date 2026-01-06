@@ -1,5 +1,7 @@
+<?php
 // Função simples para carregar variáveis de ambiente do arquivo .env
-function loadEnv($path) {
+function loadEnv($path)
+{
     if (!file_exists($path)) {
         return false;
     }
@@ -28,24 +30,24 @@ if (!loadEnv(__DIR__ . '/.env')) {
 
 $host = getenv('DB_HOST') ?: 'db.kfvadrowjzgcandefodu.supabase.co';
 $port = getenv('DB_PORT') ?: '5432';
-$db   = getenv('DB_NAME') ?: 'postgres';
+$db = getenv('DB_NAME') ?: 'postgres';
 $user = getenv('DB_USER') ?: 'postgres';
 $pass = getenv('DB_PASS') ?: 'Resident4567'; // O ideal é que esta senha esteja no .env no servidor
 
 $dsn = "pgsql:host=$host;port=$port;dbname=$db";
 $options = [
-    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
 ];
 
 try {
-     $pdo = new PDO($dsn, $user, $pass, $options);
+    $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
-     throw new \PDOException("Erro de conexão com o banco de dados Supabase. Verifique o arquivo .env ou as configurações de rede. " . $e->getMessage(), (int)$e->getCode());
+    throw new \PDOException("Erro de conexão com o banco de dados Supabase. Verifique o arquivo .env ou as configurações de rede. " . $e->getMessage(), (int) $e->getCode());
 }
 
 $site = $pdo->query("SELECT nome_site, logo, deposito_min, saque_min, cpa_padrao, revshare_padrao FROM config LIMIT 1")->fetch(PDO::FETCH_ASSOC);
-$nomeSite = $site['nome_site'] ?? ''; 
+$nomeSite = $site['nome_site'] ?? '';
 $logoSite = $site['logo'] ?? '';
 $depositoMin = $site['deposito_min'] ?? 10;
 $saqueMin = $site['saque_min'] ?? 50;
